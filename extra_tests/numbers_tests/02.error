@@ -1,0 +1,7 @@
+program numbers
+    integer x;
+    integer y;
+    integer z;
+begin
+    x := 10.000.00;
+end

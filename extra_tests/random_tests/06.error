@@ -1,0 +1,9 @@
+program random
+    integer x;
+    integer y;
+    integer z;
+begin
+    while 1 ... ((z*2)...y-10) do
+		read(z);
+	done
+end

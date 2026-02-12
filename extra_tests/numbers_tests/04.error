@@ -1,0 +1,7 @@
+program numbers
+    integer x;
+    integer y;
+    integer z;
+begin
+    x := 1000.000.;
+end

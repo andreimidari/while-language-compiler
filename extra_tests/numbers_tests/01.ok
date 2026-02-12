@@ -1,0 +1,15 @@
+program numbers
+    integer x;
+    integer y;
+    integer z;
+begin
+    x := 123.456;
+    y := 1.234.456;
+    z := 1.234;
+    x := 12.345.678;
+    y := 12.345;
+    z := 1.234;
+    x := 123;
+    y := 12;
+    z := 1;
+end

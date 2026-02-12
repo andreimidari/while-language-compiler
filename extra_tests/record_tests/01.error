@@ -1,0 +1,10 @@
+program record
+    integer x;
+    integer y;
+    record z {
+		integer a,
+		boolean b,
+	};
+begin
+    skip;
+end

@@ -1,0 +1,11 @@
+program record
+    integer x;
+    integer y;
+    record z {
+		integer a,
+		boolean b
+	};
+	boolen x;
+begin
+    read(true.a);
+end

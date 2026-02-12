@@ -1,0 +1,26 @@
+program record
+    integer x;
+    integer y;
+    record z {
+		integer a,
+		boolean b
+	};
+	record zz {
+		integer x,
+		record zzz {
+			boolean fst,
+			boolean snd
+		},
+		boolean test
+	};
+	boolen x;
+begin
+    read(z.a);
+    read(zz.zzz.fst);
+    zz.zzz.snd := true;
+    if z.a>10 then
+        while zz.zzz.fst and zz.zzz.snd do
+            skip;
+        done
+    endif
+end

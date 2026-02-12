@@ -1,0 +1,19 @@
+program record
+    integer x;
+    integer y;
+    record z {
+		integer a,
+		boolean b
+	};
+	record zz {
+		integer x,
+		record zzz {
+			boolean fst,
+			boolean snd
+		},
+		boolean test
+	};
+	boolen x;
+begin
+    read(z.a.);
+end

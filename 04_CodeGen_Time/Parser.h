@@ -9,7 +9,7 @@ class Parser: public ParserBase
 {
         
     public:
-        Parser(std::istream& inFile) : lexer( &inFile, &std::cerr ) {}
+        Parser(std::istream& inFile) : lexer( &inFile, &std::cerr ), label_index(0) {}
         int parse();
 
     private:

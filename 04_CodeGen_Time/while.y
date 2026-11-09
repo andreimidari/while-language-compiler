@@ -40,7 +40,7 @@
     /* ----- Skeleton ----- */
 
 %token T_TIME
-%token T_TIME_LIT
+%token <name> T_TIME_LIT
 %token T_HOUR
 %token T_MINUTE
 
@@ -71,6 +71,8 @@ program:
                 std::cout << v.second.label << ": resd 1" << std::endl;
             if(v.second.decl_type == boolean)
                 std::cout << v.second.label << ": resb 1" << std::endl;
+            if(v.second.decl_type == time_type)
+                std::cout << v.second.label << ": resd 1" << std::endl;
         }
         std::cout << std::endl;
         std::cout << "segment .text" << std::endl;
@@ -212,7 +214,9 @@ assignment:
         /* ----- Skeleton ----- */
         
         if($3->expr_type == time_type)
-            $$ = new std::string("");
+            $$ = new std::string("" +
+                    $3->expr_code +
+                    "mov [" + symbol_table[*$1].label + "], eax\n");
 
         /* ----- Skeleton END ----- */
         
@@ -230,6 +234,12 @@ read:
             ss << "Undeclared variable: " << *$3 << std::endl;
             error( ss.str().c_str() );
         }
+        if(symbol_table[*$3].decl_type == time_type)
+        {
+            std::stringstream ss;
+            ss << get_line_number() << ": Type error." << std::endl;
+            error( ss.str().c_str() );
+        }
         if(symbol_table[*$3].decl_type == integer)
         {
             $$ = new std::string("call read_unsigned\nmov [" + symbol_table[*$3].label + "], eax\n");
@@ -245,6 +255,12 @@ read:
 write:
     T_WRITE T_OPEN expression T_CLOSE T_SEMICOLON
     {
+        if($3->expr_type == time_type)
+                {
+                    std::stringstream ss;
+                    ss << get_line_number() << ": Type error." << std::endl;
+                    error( ss.str().c_str() );
+                }
         if($3->expr_type == integer)
         {
             $$ = new std::string("" +
@@ -375,7 +391,7 @@ expression:
         if(symbol_table[*$1].decl_type == time_type)
         {
             $$ = new expression_descriptor(symbol_table[*$1].decl_type,
-                    "");
+                    "mov eax, [" + symbol_table[*$1].label + "]\n");
         }
 
         /* ----- Skeleton END ----- */
@@ -388,7 +404,12 @@ expression:
 |   
     T_TIME_LIT
     {
-        $$ = new expression_descriptor(time_type, "");
+        {
+            int h = atoi($1->substr(0, 2).c_str());
+            int m = atoi($1->substr(3, 2).c_str());
+            $$ = new expression_descriptor(time_type, "mov eax, " + std::to_string(h * 60 + m) + "\n");
+            delete $1;
+        }
     }
 
     /* ----- Skeleton END ----- */
@@ -457,11 +478,11 @@ expression:
            error( ss.str().c_str() );
         }
         $$ = new expression_descriptor(integer, std::string("") +
-                "xor edx, edx\n" +
                 $3->expr_code +
                 "push eax\n" +
                 $1->expr_code +
                 "pop ebx\n" +
+                "xor edx, edx\n" +
                 "div ebx\n");
         delete $1;
         delete $3;
@@ -476,11 +497,11 @@ expression:
            error( ss.str().c_str() );
         }
         $$ = new expression_descriptor(integer, std::string("") +
-                "xor edx, edx\n" +
                 $3->expr_code +
                 "push eax\n" +
                 $1->expr_code +
                 "pop ebx\n" +
+                "xor edx, edx\n" +
                 "div ebx\n" +
                 "mov eax, edx\n");
         delete $1;
@@ -565,9 +586,9 @@ expression:
         }
         $$ = new expression_descriptor(boolean, "" +
                 $3->expr_code +
-                "push ax\n" +
+                "push eax\n" +
                 $1->expr_code +
-                "pop bx\n" +
+                "pop ebx\n" +
                 "and al, bl\n");
         delete $1;
         delete $3;
@@ -583,9 +604,9 @@ expression:
         }
         $$ = new expression_descriptor(boolean, "" +
                 $3->expr_code +
-                "push ax\n" +
+                "push eax\n" +
                 $1->expr_code +
-                "pop bx\n" +
+                "pop ebx\n" +
                 "or al, bl\n");
         delete $1;
         delete $3;
@@ -622,7 +643,7 @@ expression:
            ss << get_line_number() << ": Type error." << std::endl;
            error( ss.str().c_str() );
         }
-        $$ = new expression_descriptor(integer, "");
+        $$ = new expression_descriptor(integer, $3->expr_code + "xor edx, edx\nmov ebx, 60\ndiv ebx\n");
         delete $3;
     }
 |
@@ -634,7 +655,7 @@ expression:
            ss << get_line_number() << ": Type error." << std::endl;
            error( ss.str().c_str() );
         }
-        $$ = new expression_descriptor(integer, "");
+        $$ = new expression_descriptor(integer, $3->expr_code + "xor edx, edx\nmov ebx, 60\ndiv ebx\nmov eax, edx\n");
         delete $3;
     }
 

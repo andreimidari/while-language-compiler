@@ -6,7 +6,7 @@
 #include<map>
 #include<sstream>
 
-enum type { integer, boolean };
+enum type { integer, boolean, time_type };
 
 struct expression_descriptor {
 	type expr_type;

@@ -22,6 +22,7 @@ inline int Parser::lex()
 
     if ( ret == T_ID )   VALUE_VAR.name = new std::string(token_text);
     if ( ret == T_NUM )  VALUE_VAR.name = new std::string(token_text);
+    if ( ret == T_TIME_LIT ) VALUE_VAR.name = new std::string(token_text);
 
     return ret;
 }

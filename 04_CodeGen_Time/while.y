@@ -47,7 +47,8 @@
     /* ----- Skeleton END ----- */
 
 
-%left T_OR T_AND
+%left T_OR 
+%left T_AND
 %left T_EQ
 %left T_LESS T_GR
 %left T_ADD T_SUB

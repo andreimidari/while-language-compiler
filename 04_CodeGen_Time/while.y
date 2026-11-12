@@ -78,7 +78,14 @@ program:
         std::cout << std::endl;
         std::cout << "segment .text" << std::endl;
         std::cout << "main:" << std::endl;
+        std::cout << "push ebp" << std::endl;
+        std::cout << "mov ebp, esp" << std::endl;
+        std::cout << "and esp, -16" << std::endl;
+        std::cout << "sub esp, 12" << std::endl;
         std::cout << *$5 << std::endl;
+        std::cout << "mov esp, ebp" << std::endl;
+        std::cout << "pop ebp" << std::endl;
+        std::cout << "xor eax, eax" << std::endl;
         std::cout << "ret" << std::endl;
         delete $2;
         delete $5;
@@ -243,11 +250,11 @@ read:
         }
         if(symbol_table[*$3].decl_type == integer)
         {
-            $$ = new std::string("call read_unsigned\nmov [" + symbol_table[*$3].label + "], eax\n");
+            $$ = new std::string("sub esp, 4\ncall read_unsigned\nadd esp, 4\nmov [" + symbol_table[*$3].label + "], eax\n");
         }
         if(symbol_table[*$3].decl_type == boolean)
         {
-            $$ = new std::string("call read_boolean\nmov [" + symbol_table[*$3].label + "], al\n");
+            $$ = new std::string("sub esp, 4\ncall read_boolean\nadd esp, 4\nmov [" + symbol_table[*$3].label + "], al\n");
         }
         delete $3;
     }
@@ -428,8 +435,8 @@ expression:
                 $3->expr_code +
                 "push eax\n" +
                 $1->expr_code +
-                "pop ebx\n" +
-                "add eax, ebx\n");
+                "pop ecx\n" +
+                "add eax, ecx\n");
         delete $1;
         delete $3;
     }
@@ -446,8 +453,8 @@ expression:
                 $3->expr_code +
                 "push eax\n" +
                 $1->expr_code +
-                "pop ebx\n" +
-                "sub eax, ebx\n");
+                "pop ecx\n" +
+                "sub eax, ecx\n");
         delete $1;
         delete $3;
     }
@@ -464,8 +471,8 @@ expression:
                 $3->expr_code +
                 "push eax\n" +
                 $1->expr_code +
-                "pop ebx\n" +
-                "mul ebx\n");
+                "pop ecx\n" +
+                "mul ecx\n");
         delete $1;
         delete $3;
     }
@@ -482,9 +489,9 @@ expression:
                 $3->expr_code +
                 "push eax\n" +
                 $1->expr_code +
-                "pop ebx\n" +
+                "pop ecx\n" +
                 "xor edx, edx\n" +
-                "div ebx\n");
+                "div ecx\n");
         delete $1;
         delete $3;
     }
@@ -501,9 +508,9 @@ expression:
                 $3->expr_code +
                 "push eax\n" +
                 $1->expr_code +
-                "pop ebx\n" +
+                "pop ecx\n" +
                 "xor edx, edx\n" +
-                "div ebx\n" +
+                "div ecx\n" +
                 "mov eax, edx\n");
         delete $1;
         delete $3;
@@ -521,8 +528,8 @@ expression:
                 $3->expr_code +
                 "push eax\n" +
                 $1->expr_code +
-                "pop ebx\n" +
-                "cmp eax, ebx\n" +
+                "pop ecx\n" +
+                "cmp eax, ecx\n" +
                 "setl al\n" +
                 "movzx eax, al\n");
         delete $1;
@@ -541,8 +548,8 @@ expression:
                 $3->expr_code +
                 "push eax\n" +
                 $1->expr_code +
-                "pop ebx\n" +
-                "cmp eax, ebx\n" +
+                "pop ecx\n" +
+                "cmp eax, ecx\n" +
                 "setg al\n" +
                 "movzx eax, al\n");
         delete $1;
@@ -572,8 +579,8 @@ expression:
                 $3->expr_code +
                 "push eax\n" +
                 $1->expr_code +
-                "pop ebx\n" +
-                "cmp eax, ebx\n" +
+                "pop ecx\n" +
+                "cmp eax, ecx\n" +
                 "sete al\n" +
                 "movzx eax, al\n");
         delete $1;
@@ -592,8 +599,8 @@ expression:
                 $3->expr_code +
                 "push eax\n" +
                 $1->expr_code +
-                "pop ebx\n" +
-                "and eax, ebx\n");
+                "pop ecx\n" +
+                "and eax, ecx\n");
         delete $1;
         delete $3;
     }
@@ -610,8 +617,8 @@ expression:
                 $3->expr_code +
                 "push eax\n" +
                 $1->expr_code +
-                "pop ebx\n" +
-                "or eax, ebx\n");
+                "pop ecx\n" +
+                "or eax, ecx\n");
         delete $1;
         delete $3;
     }
@@ -647,7 +654,7 @@ expression:
            ss << get_line_number() << ": Type error." << std::endl;
            error( ss.str().c_str() );
         }
-        $$ = new expression_descriptor(integer, $3->expr_code + "xor edx, edx\nmov ebx, 60\ndiv ebx\n");
+        $$ = new expression_descriptor(integer, $3->expr_code + "xor edx, edx\nmov ecx, 60\ndiv ecx\n");
         delete $3;
     }
 |
@@ -659,7 +666,7 @@ expression:
            ss << get_line_number() << ": Type error." << std::endl;
            error( ss.str().c_str() );
         }
-        $$ = new expression_descriptor(integer, $3->expr_code + "xor edx, edx\nmov ebx, 60\ndiv ebx\nmov eax, edx\n");
+        $$ = new expression_descriptor(integer, $3->expr_code + "xor edx, edx\nmov ecx, 60\ndiv ecx\nmov eax, edx\n");
         delete $3;
     }
 

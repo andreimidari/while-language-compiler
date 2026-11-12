@@ -159,7 +159,7 @@ statements:
 statement:
     T_SKIP T_SEMICOLON
     {
-        $$ = new std::string("nop");
+        $$ = new std::string("nop\n");
     }
 |
     assignment
@@ -360,12 +360,12 @@ expression:
 |
     T_TRUE
     {
-        $$ = new expression_descriptor(boolean, "mov al, 1\n");
+        $$ = new expression_descriptor(boolean, "mov eax, 1\n");
     }
 |
     T_FALSE
     {
-        $$ = new expression_descriptor(boolean, "mov al, 0\n");
+        $$ = new expression_descriptor(boolean, "mov eax, 0\n");
     }
 |
     T_ID
@@ -384,7 +384,7 @@ expression:
         if(symbol_table[*$1].decl_type == boolean)
         {
             $$ = new expression_descriptor(symbol_table[*$1].decl_type,
-                    "mov al, [" + symbol_table[*$1].label + "]\n");
+                    "movzx eax, byte [" + symbol_table[*$1].label + "]\n");
         }
 
         /* ----- Skeleton ----- */
@@ -523,7 +523,8 @@ expression:
                 $1->expr_code +
                 "pop ebx\n" +
                 "cmp eax, ebx\n" +
-                "setl al\n");
+                "setl al\n" +
+                "movzx eax, al\n");
         delete $1;
         delete $3;
     }
@@ -542,7 +543,8 @@ expression:
                 $1->expr_code +
                 "pop ebx\n" +
                 "cmp eax, ebx\n" +
-                "setg al\n");
+                "setg al\n" +
+                "movzx eax, al\n");
         delete $1;
         delete $3;
     }
@@ -572,7 +574,8 @@ expression:
                 $1->expr_code +
                 "pop ebx\n" +
                 "cmp eax, ebx\n" +
-                "sete al\n");
+                "sete al\n" +
+                "movzx eax, al\n");
         delete $1;
         delete $3;
     }
@@ -590,7 +593,7 @@ expression:
                 "push eax\n" +
                 $1->expr_code +
                 "pop ebx\n" +
-                "and al, bl\n");
+                "and eax, ebx\n");
         delete $1;
         delete $3;
     }
@@ -608,7 +611,7 @@ expression:
                 "push eax\n" +
                 $1->expr_code +
                 "pop ebx\n" +
-                "or al, bl\n");
+                "or eax, ebx\n");
         delete $1;
         delete $3;
     }
@@ -623,7 +626,7 @@ expression:
         }
         $$ = new expression_descriptor(boolean, "" +
                 $2->expr_code +
-                "xor al, 1\n");
+                "xor eax, 1\n");
         delete $2;
     }
 |

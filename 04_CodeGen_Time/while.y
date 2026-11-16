@@ -210,23 +210,28 @@ assignment:
            ss << get_line_number() << ": Type error." << std::endl;
            error( ss.str().c_str() );
         }
+        $$ = nullptr;
+
         if($3->expr_type == integer)
             $$ = new std::string("" +
                     $3->expr_code +
                     "mov [" + symbol_table[*$1].label + "], eax\n");
-        if($3->expr_type == boolean)
+        else if($3->expr_type == boolean)
             $$ = new std::string("" +
                     $3->expr_code +
                     "mov [" + symbol_table[*$1].label + "], al\n");
         
         /* ----- Skeleton ----- */
         
-        if($3->expr_type == time_type)
+        else if($3->expr_type == time_type)
             $$ = new std::string("" +
                     $3->expr_code +
                     "mov [" + symbol_table[*$1].label + "], eax\n");
 
         /* ----- Skeleton END ----- */
+        
+        else
+            error("Internal error: unknown assignment type.");
         
         delete $1;
         delete $3;
@@ -383,12 +388,14 @@ expression:
             ss << "Undeclared variable: " << *$1 << std::endl;
             error( ss.str().c_str() );
         }
+        $$ = nullptr;
+
         if(symbol_table[*$1].decl_type == integer)
         {
             $$ = new expression_descriptor(symbol_table[*$1].decl_type,
                     "mov eax, [" + symbol_table[*$1].label + "]\n");
         }
-        if(symbol_table[*$1].decl_type == boolean)
+        else if(symbol_table[*$1].decl_type == boolean)
         {
             $$ = new expression_descriptor(symbol_table[*$1].decl_type,
                     "movzx eax, byte [" + symbol_table[*$1].label + "]\n");
@@ -396,13 +403,16 @@ expression:
 
         /* ----- Skeleton ----- */
 
-        if(symbol_table[*$1].decl_type == time_type)
+        else if(symbol_table[*$1].decl_type == time_type)
         {
             $$ = new expression_descriptor(symbol_table[*$1].decl_type,
                     "mov eax, [" + symbol_table[*$1].label + "]\n");
         }
 
         /* ----- Skeleton END ----- */
+
+        else
+            error("Internal error: unknown variable type.");
 
         delete $1;
     }

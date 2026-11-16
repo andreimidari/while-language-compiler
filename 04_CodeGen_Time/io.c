@@ -34,7 +34,6 @@ void write_signed( int num )
 
 void write_boolean( int num )
 {
-	num &= 1;
 	if( num )
 		fprintf( stdout, "true\n" );
 	else

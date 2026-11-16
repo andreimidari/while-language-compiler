@@ -363,6 +363,7 @@ expression:
     T_NUM
     {
         $$ = new expression_descriptor(integer, "mov eax, " + *$1 + "\n");
+        delete $1;
     }
 |
     T_TRUE

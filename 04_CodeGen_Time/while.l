@@ -57,7 +57,7 @@ mod         return Parser::T_MOD;
 true        return Parser::T_TRUE;
 false       return Parser::T_FALSE;
 
-"#".*\n    // nothing to do
+"#".*       // nothing to do
 
 {LETTER}({LETTER}|{DIGIT}|_)*    return Parser::T_ID;
 

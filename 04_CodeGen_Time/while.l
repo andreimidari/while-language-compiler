@@ -7,7 +7,7 @@
 %}
 
 DIGIT  		[0-9]
-WS          [ \t\n]
+WS          [ \t\r\n]
 LETTER      [a-zA-Z]
 
 %%

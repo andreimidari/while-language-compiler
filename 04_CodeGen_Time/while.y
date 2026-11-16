@@ -280,7 +280,6 @@ write:
         if($3->expr_type == boolean)
         {
             $$ = new std::string(
-                    "xor eax, eax\n" +
                     $3->expr_code +
                     "push eax\n" +
                     "call write_boolean\n" +
@@ -302,8 +301,8 @@ branch:
         std::string end = new_label();
         $$ = new std::string("" +
                 $2->expr_code +
-                "cmp al, 1\n" +
-                "jne near " + end + "\n" +
+                "test eax, eax\n" +
+                "jz near " + end + "\n" +
                 *$4 +
                 end + ":\n");
         delete $2;
@@ -322,8 +321,8 @@ branch:
         std::string end = new_label();
         $$ = new std::string("" +
                 $2->expr_code +
-                "cmp al, 1\n" +
-                "jne near " + elsel + "\n" +
+                "test eax, eax\n" +
+                "jz near " + elsel + "\n" +
                 *$4 +
                 "jmp " + end + "\n" +
                 elsel + ":\n" +
@@ -349,8 +348,8 @@ loop:
         $$ = new std::string("" +
                 start + ":\n" +
                 $2->expr_code +
-                "cmp al, 1\n" +
-                "jne near " + end + "\n" +
+                "test eax, eax\n" +
+                "jz near " + end + "\n" +
                 *$4 +
                 "jmp " + start + "\n" +
                 end + ":\n");

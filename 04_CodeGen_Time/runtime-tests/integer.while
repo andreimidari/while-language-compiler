@@ -1,0 +1,53 @@
+program integer_boundaries
+
+  integer zero;
+  integer one;
+  integer max32;
+  integer maxu32;
+  integer r1;
+  integer r2;
+  integer r3;
+
+begin
+  zero := 0;
+  one := 1;
+  max32 := 2147483647;
+  maxu32 := 4294967295;
+
+  # literals and variable round trips
+  write(zero);
+  write(one);
+  write(max32);
+  write(maxu32);
+  write(max32 + 1);
+  write(maxu32 - 1);
+
+  # arithmetic
+  write(1 + 2 * 3);
+  write((1 + 2) * 3);
+  write(10 - 3);
+  write(20 div 6);
+  write(20 mod 6);
+  write(maxu32 div 1);
+  write(maxu32 mod 2);
+
+  # comparisons
+  write(0 < 1);
+  write(1 < 1);
+  write(1 < 0);
+  write(1 > 0);
+  write(1 > 1);
+  write(0 > 1);
+  write(0 = 0);
+  write(0 = 1);
+
+  # boundary inputs: 0, 2147483647, 4294967295
+  read(r1);
+  read(r2);
+  read(r3);
+  write(r1);
+  write(r2);
+  write(r3);
+  write(r1 + r2);
+  write(r3);
+end

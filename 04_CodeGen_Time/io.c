@@ -3,22 +3,25 @@
 
 unsigned read_unsigned()
 {
-	unsigned ret;
-	fscanf( stdin, "%u", &ret );
+	unsigned ret = 0;
+	if( fscanf( stdin, "%u", &ret ) != 1 )
+		return 0;
 	return ret;
 }
 
 int read_signed()
 {
-	int ret;
-	fscanf( stdin, "%d", &ret );
+	int ret = 0;
+	if( fscanf( stdin, "%d", &ret ) != 1 )
+		return 0;
 	return ret;
 }
 
 int read_boolean()
 {
-	char ret[256];
-	fscanf( stdin, "%s", ret );
+	char ret[256] = "";
+	if( fscanf( stdin, "%255s", ret ) != 1 )
+		return 0;
 	return !strcmp(ret,"true");
 }
 

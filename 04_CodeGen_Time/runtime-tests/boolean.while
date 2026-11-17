@@ -1,0 +1,39 @@
+program boolean_truth_tables
+
+  boolean t;
+  boolean f;
+
+begin
+  t := true;
+  f := false;
+
+  # and
+  write(t and t);
+  write(t and f);
+  write(f and t);
+  write(f and f);
+
+  # or
+  write(t or t);
+  write(t or f);
+  write(f or t);
+  write(f or f);
+
+  # not
+  write(not t);
+  write(not f);
+
+  # equality
+  write(t = t);
+  write(t = f);
+  write(f = t);
+  write(f = f);
+
+  # precedence and grouping
+  write(t or f and f);
+  write((t or f) and f);
+  write(not f and f);
+  write(not (f and f));
+  write(t = (f or t));
+  write((t = t) and (f = f));
+end

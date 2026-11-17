@@ -1,0 +1,40 @@
+program time_boundaries
+
+  time t;
+  time midnight;
+  time latest;
+
+begin
+  midnight := 00:00;
+  latest := 23:59;
+
+  write(hour(midnight));
+  write(minute(midnight));
+  write(hour(latest));
+  write(minute(latest));
+
+  t := 00:01;
+  write(hour(t));
+  write(minute(t));
+
+  t := 12:34;
+  write(hour(t));
+  write(minute(t));
+
+  t := 23:00;
+  write(hour(t));
+  write(minute(t));
+
+  t := 00:59;
+  write(hour(t));
+  write(minute(t));
+
+  # assignment round trip
+  t := latest;
+  write(hour(t));
+  write(minute(t));
+
+  write(hour(00:00) + minute(23:59));
+  write(hour(23:59) + minute(23:59));
+  write(hour(23:59) * 60 + minute(23:59));
+end

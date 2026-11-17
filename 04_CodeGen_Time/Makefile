@@ -21,7 +21,10 @@ scanner: lex.yy.cc
 parser: parse.cc
 
 test: $(COMPILERNAME) $(OBJECTS)
-	./run_tests.sh $(OBJECTS)
+	bash run_tests.sh $(OBJECTS)
+	bash run_lexer_tests.sh $(OBJECTS)
+	bash run_runtime_tests.sh $(OBJECTS)
+	bash run_io_tests.sh
 
 io.o: io.c
 	$(CC) $(CFLAGS) -c $< -o $@

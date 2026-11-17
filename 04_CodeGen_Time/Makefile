@@ -1,5 +1,6 @@
 COMPILERNAME=while
 SCANNERTEST=scantest
+GENERATED=lex.yy.cc parse.cc Parserbase.h
 
 all: $(COMPILERNAME)
 	-
@@ -13,8 +14,10 @@ scanner: lex.yy.cc
 parser: parse.cc
 	-
 
+.PHONY: clean
+
 clean:
-	rm -rf $(COMPILERNAME) $(SCANNERTEST) lex.yy.cc Parserbase.h parse.cc *~
+	rm -f $(COMPILERNAME) $(SCANNERTEST) $(GENERATED) *~
 
 lex.yy.cc: $(COMPILERNAME).l
 	flex $(COMPILERNAME).l

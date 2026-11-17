@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
-# Usage: ./run_tests.sh   (after `make`)
+# Usage: ./run_tests.sh [io.o]   (after `make`)
 # *.ok            -> must compile, assemble (nasm) and link.
 # *.*error        -> compiler must exit non-zero.
 cd "$(dirname "$0")"
 pass=0; fail=0
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
-gcc -m32 -c io.c -o "$tmp/io.o" || exit 1
+if [ -n "${1:-}" ] && [ -f "$1" ]; then
+    cp "$1" "$tmp/io.o"
+else
+    gcc -m32 -c io.c -o "$tmp/io.o" || exit 1
+fi
 
 for f in general-tests/* custom-tests/*; do
     case "$f" in

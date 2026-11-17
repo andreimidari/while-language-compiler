@@ -1,23 +1,30 @@
-COMPILERNAME=while
-SCANNERTEST=scantest
-GENERATED=lex.yy.cc parse.cc Parserbase.h
+COMPILERNAME = while
+SCANNERTEST = scantest
+GENERATED   = lex.yy.cc parse.cc Parserbase.h
+OBJECTS     = io.o
+
+CC       = gcc
+CXX      = g++
+CFLAGS   = -m32 -O2 -Wall -Wextra
+CXXFLAGS = -std=c++17 -O2 -Wall -Wextra
+
+BISONCPP_VSN = $$(bisonc++ --version 2>/dev/null | sed -n 's/^[^0-9]*\([0-9][0-9]*\)\.\([0-9][0-9]*\).*/\1 \2/p' | awk 'NR == 1 { printf "%d%02d", $$1, $$2 }')
+
+.PHONY: all compiler scanner parser test clean
 
 all: $(COMPILERNAME)
-	-
 
 compiler: $(COMPILERNAME)
-	-
 
 scanner: lex.yy.cc
-	-
 
 parser: parse.cc
-	-
 
-.PHONY: clean
+test: $(COMPILERNAME) $(OBJECTS)
+	./run_tests.sh $(OBJECTS)
 
-clean:
-	rm -f $(COMPILERNAME) $(SCANNERTEST) $(GENERATED) *~
+io.o: io.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 lex.yy.cc: $(COMPILERNAME).l
 	flex $(COMPILERNAME).l
@@ -25,10 +32,18 @@ lex.yy.cc: $(COMPILERNAME).l
 parse.cc: $(COMPILERNAME).y Parser.ih
 	bisonc++ $(COMPILERNAME).y
 
-$(COMPILERNAME): $(COMPILERNAME).cc lex.yy.cc parse.cc
-	VSN=$$(bisonc++ --version | cut -f2 -d" " | cut -f1,2 -d"." | tr -d 'V' | tr -d '.'); \
-	g++ -DBISONCPP_VSN=$$VSN -o$(COMPILERNAME) $(COMPILERNAME).cc parse.cc lex.yy.cc
+Parserbase.h: parse.cc
+	bisonc++ $(COMPILERNAME).y
 
-$(SCANNERTEST): $(SCANNERTEST).cc lex.yy.cc
-	VSN=$$(bisonc++ --version | cut -f2 -d" " | cut -f1,2 -d"." | tr -d 'V' | tr -d '.'); \
-	g++ -DBISONCPP_VSN=$VSN -o$(SCANNERTEST) $(SCANNERTEST).cc lex.yy.cc
+$(COMPILERNAME): $(COMPILERNAME).cc lex.yy.cc parse.cc Parserbase.h Parser.h Parser.ih semantics.h
+	VSN=$(BISONCPP_VSN); \
+	test -n "$$VSN" || { echo "bisonc++ not found or version could not be parsed" >&2; exit 1; }; \
+	$(CXX) $(CXXFLAGS) -DBISONCPP_VSN=$$VSN -o $@ $(COMPILERNAME).cc parse.cc lex.yy.cc
+
+$(SCANNERTEST): $(SCANNERTEST).cc lex.yy.cc Parserbase.h
+	VSN=$(BISONCPP_VSN); \
+	test -n "$$VSN" || { echo "bisonc++ not found or version could not be parsed" >&2; exit 1; }; \
+	$(CXX) $(CXXFLAGS) -DBISONCPP_VSN=$$VSN -o $@ $(SCANNERTEST).cc lex.yy.cc
+
+clean:
+	rm -f $(COMPILERNAME) $(SCANNERTEST) $(OBJECTS) $(GENERATED) *~
